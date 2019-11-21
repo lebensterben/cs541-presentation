@@ -26,16 +26,16 @@
 <div class="reveal">
 <div class="slides">
 <section>
-<section id="slide-org6fd1db4">
-<h2 id="org6fd1db4">A Confidence-Aware Approach for Truth Discovery on Long-Tail Data</h2>
+<section id="slide-orgf0436b2">
+<h2 id="orgf0436b2">A Confidence-Aware Approach for Truth Discovery on Long-Tail Data</h2>
 <p>
 Lucius Hu
 </p>
 </section>
 </section>
 <section>
-<section id="slide-org8505617">
-<h2 id="org8505617">Truth Discovery</h2>
+<section id="slide-org3246350">
+<h2 id="org3246350">Truth Discovery</h2>
 <ul>
 <li class="fragment appear">Problem:
 <ul>
@@ -60,8 +60,8 @@ Lucius Hu
 </section>
 </section>
 <section>
-<section id="slide-org2bd1f90">
-<h2 id="org2bd1f90">Notations</h2>
+<section id="slide-org6621f7c">
+<h2 id="org6621f7c">Notations</h2>
 <ul>
 <li class="fragment appear">Let \(\mathcal{N}\) be the set of entities.</li>
 <li class="fragment appear">Let \(\mathcal{S}\) be the set of sources.</li>
@@ -81,8 +81,8 @@ Lucius Hu
 </section>
 </section>
 <section>
-<section id="slide-org3d95091">
-<h2 id="org3d95091">Simple Voting Algorithm</h2>
+<section id="slide-org5aad61d">
+<h2 id="org5aad61d">Simple Voting Algorithm</h2>
 
 <div class="figure">
 <p><img src="./img/simple_voting_algo.png" alt="simple_voting_algo.png" />
@@ -120,8 +120,8 @@ Lucius Hu
 </section>
 </section>
 <section>
-<section id="slide-org784e4f0">
-<h2 id="org784e4f0">Weighted Voting Algorithm</h2>
+<section id="slide-org378560e">
+<h2 id="org378560e">Weighted Voting Algorithm</h2>
 
 <div class="figure">
 <p><img src="./img/weighted_voting_algo.png" alt="weighted_voting_algo.png" />
@@ -182,8 +182,8 @@ Lucius Hu
 </section>
 </section>
 <section>
-<section id="slide-org41c0031">
-<h2 id="org41c0031">Confidence-aware Approach</h2>
+<section id="slide-org4c1d344">
+<h2 id="org4c1d344">Confidence-aware Approach</h2>
 <ul>
 <li class="fragment appear">Intuition:
 <ul>
@@ -208,8 +208,8 @@ Lucius Hu
 </section>
 </section>
 <section>
-<section id="slide-orgaf53dc2">
-<h2 id="orgaf53dc2">Confidence-Aware Truth Discovery</h2>
+<section id="slide-orgdf408b6">
+<h2 id="orgdf408b6">Confidence-Aware Truth Discovery</h2>
 <ul>
 <li>Assumptions:
 <ul>
@@ -283,7 +283,26 @@ The goal is to minimise \(\epsilon\), i.e.
 <section>
 <ul>
 <li class="fragment appear">Algorithm:
-<img src="./img/catd_algo.png" alt="catd_algo.png" /></li>
+<ul>
+<li class="fragment appear">Remove outliers, and initialise truths by mean or median for example.</li>
+<li class="fragment appear">Comput source weight</li>
+<li class="fragment appear">Compute truths</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgfe34f32">
+<h2 id="orgfe34f32">Takeaway From Experiments</h2>
+<ul>
+<li class="fragment appear">CATD tkaes the number of claims made by a source into consideration
+<ul>
+<li>Ceteris paribus, sources with fewer number of claims have low weights</li>
+<li>This is desirable because it's only meaningful to estimate the reliability if a source makes sufficient claims</li>
+
+</ul></li>
 
 </ul>
 </section>
