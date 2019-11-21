@@ -1,0 +1,59 @@
+\documentclass[preview]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage[linesnumbered,commentsnumbered,lined,plain,noend]{algorithm2e}
+\author{Lucius}
+\IncMargin{1em}
+\begin{document}
+\begin{algorithm}[H]
+  \Set\AlgoLined
+  \SetKwProg{Fn}{function}{}{}
+  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+  \SetKw{Define}{$\mathrel{{:}{=}}$}
+  \SetKw{Assign}{$\longleftarrow$}\SetKw{PlusAssign}{$\mathrel{{+}{=}}$}\SetKw{DivideAssign}{$\mathrel{{/}{=}}$}
+  \SetKw{And}{$\vee$}\SetKw{Or}{$\wedge$}
+  \SetKw{HashMap}{HashMap}\SetKw{Vector}{Vector}
+  \SetKwData{Claim}{$c$}\SetKwArray{Claims}{$\mathcal{C}$}
+  \SetKwData{Count}{count}\SetKwArray{Counts}{counts}
+  \SetKwData{Entity}{$n$}\SetKwArray{Entities}{$\mathcal{N}$}
+  \SetKwData{Source}{$s$}\SetKwArray{Sources}{$\mathcal{S}$}
+  \SetKwData{Truth}{$x_n^*$}\SetKwArray{Truths}{$\mathcal{X}$}
+  \SetKwData{Info}{$x_n^s$}
+  \SetKwArray{NewTruths}{$\mathcal{X}^'$}
+  \SetKwArray{Weights}{$\matchcal{W}$}
+  \SetKwFunction{Append}{append}
+  \SetKwFunction{EvalWeights}{eval\_weights}
+  \SetKwFunction{Filter}{filter}
+  \SetKwFunction{Len}{len}
+  \SetKwFunction{Sort}{sort}
+
+  \Fn{\EvalWeights{\Claims, \Truths} $\Rightarrow$ \Weights}{
+    \Input{set of claims \Claims \Define $\{(\Entity, \Source, \Info)\}$,\\
+      set of truths \Truths \Define $\{(\Entity,\Truth)\}$.}
+    \Output{set of weights \Weights \Define $\{w_s\}$.}
+
+    \ForEach{\Source $\in$ \Sources}{
+      \tcp*[h]{Proportion of correct information}\\
+      \Weights{\Source} \Assign |\Claims.\Filter{$\Claim.1 \equiv \Source$ \And
+        $\Claim.2 \equiv
+        \Truths{$\Claim.0$}.1$}|$\Big/$|\Claims.\Filter{$\Claim.1 \equiv
+        \Source$}|\;
+    }
+    \ForEach{\Source $\in$ \Sources}{
+      $\tcp*[h]{Sum up to one}\\
+      \Weights{\Source} \DivideAssign $\sum_{\Source \in \Sources}{\Weights{\Source}}\;
+    }
+  }
+\end{algorithm}
+\end{document}
+\DecMargin{1em}

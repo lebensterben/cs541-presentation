@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="author" content="Lucius"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="file:///home/lucius/GitHub/reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="file:///home/lucius/GitHub/reveal.js/css/theme/moon.css" id="theme"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'file:///home/lucius/GitHub/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section>
+<section id="slide-org6fd1db4">
+<h2 id="org6fd1db4">A Confidence-Aware Approach for Truth Discovery on Long-Tail Data</h2>
+<p>
+Lucius Hu
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org8505617">
+<h2 id="org8505617">Truth Discovery</h2>
+<ul>
+<li class="fragment appear">Problem:
+<ul>
+<li class="fragment appear">Information is available from multiple sources</li>
+<li class="fragment appear">It is inconsistent across various sources</li>
+
+</ul></li>
+<li class="fragment appear">Intuition:
+<ul>
+<li class="fragment appear">Information from a reliable source is more trustworthy</li>
+<li class="fragment appear">Source that provides trustworthy information is more reliable</li>
+
+</ul></li>
+<li class="fragment appear">Objectives:
+<ul>
+<li class="fragment appear">Evaluate reliability of data sources</li>
+<li class="fragment appear">Find the most trustworthy piece of information from most reliable source</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org2bd1f90">
+<h2 id="org2bd1f90">Notations</h2>
+<ul>
+<li class="fragment appear">Let \(\mathcal{N}\) be the set of entities.</li>
+<li class="fragment appear">Let \(\mathcal{S}\) be the set of sources.</li>
+<li class="fragment appear">Let \(x_n^s\) be the information for an entity \(n \in \mathcal{N}\) from a source \(s \in \mathcal{S}\).</li>
+<li class="fragment appear">Let \(\mathcal{C} = \bigcup_{n \in \mathcal{N}, s \in \mathcal{S}}{(n,s,x_n^s)}\) be the set of claims as input, where each claim is a triple of entity, source, and information.</li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li class="fragment appear">Let \(\mathcal{N}_s\) be the set of entities provided by source \(s\).</li>
+<li class="fragment appear">Let \(\mathcal{S}_n\) be the set of sources that provide a claim on entity \(n\).</li>
+<li class="fragment appear">Let \(x_n^*\) be the truth for an entity \(n \in \mathcal{N}\), that is the most trustworthy piece of information \(x_n^s\) for \(s \in \mathcal{S}_n\).</li>
+<li class="fragment appear">Let \(\mathcal{X} = \bigcup_{n \in \mathcal{N}}{(n,x_n^*)}\) be the set of truths as output, where each truth is a couple of entity, and truth.</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org3d95091">
+<h2 id="org3d95091">Simple Voting Algorithm</h2>
+
+<div class="figure">
+<p><img src="./img/simple_voting_algo.png" alt="simple_voting_algo.png" />
+</p>
+</div>
+</section>
+<section>
+<ul>
+<li class="fragment appear">Assumptions: "majority" represents the "truth"</li>
+<li class="fragment appear">Drawbacks: Cannot characterise reliability levels of sources
+<ul>
+<li class="fragment appear">Faulty sensors that keep emanating erroneous information</li>
+<li class="fragment appear">Spam users who propagate false information on the Web</li>
+
+</ul></li>
+<li class="fragment appear">Corrections:
+<ul>
+<li class="fragment appear">Simultaneously derive trustworthy facts and estimate source reliability degrees</li>
+<li class="fragment appear">For continuous claims, replace simple average with weighted average</li>
+<li class="fragment appear">For discreet claims, replace simple counts with weighted counts</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li class="fragment appear">Additional Notations:
+<ul>
+<li class="fragment appear">Let \(\mathcal{W} = \bigcup_{s \in \mathcal{S}}{w_s}\) be the set of weights for each source</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org784e4f0">
+<h2 id="org784e4f0">Weighted Voting Algorithm</h2>
+
+<div class="figure">
+<p><img src="./img/weighted_voting_algo.png" alt="weighted_voting_algo.png" />
+</p>
+</div>
+</section>
+<section>
+
+<div class="figure">
+<p><img src="./img/eval_weights.png" alt="eval_weights.png" />
+</p>
+</div>
+</section>
+<section>
+<ul>
+<li class="fragment appear">Assumptions:
+<ul>
+<li class="fragment appear">"truth" summarises all information weighted by reliability of each source</li>
+<li class="fragment appear">The reliability of a source is proportional to the probability of the source giving trustworthy information.
+<ul>
+<li class="fragment appear">The probability is approximated by the percentage of correct claims.</li>
+
+</ul></li>
+
+</ul></li>
+<li class="fragment appear">Drawbacks: Claims made by sources exhibits long-tail phenomenon.
+<ul>
+<li class="fragment appear">Most sources only provide information about one or two entities.
+<ul>
+<li class="fragment appear">The probability of correct claim cannot be well-approxmiated if a source only has very few claims.</li>
+
+</ul></li>
+
+</ul></li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li class="fragment appear">Corrections:
+<ul>
+<li class="fragment appear">Remove sources that provide only a few claims.
+<ul>
+<li class="fragment appear">Threshold below which to remove a source needs to be defined.</li>
+<li class="fragment appear">May result in very sparse data and limited coverage.</li>
+
+</ul></li>
+<li class="fragment appear">Use Bayesian estimation with a smoothing prior
+<ul>
+<li class="fragment appear">Needs to specify a prior</li>
+<li class="fragment appear">Curse of dimensionality</li>
+
+</ul></li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org41c0031">
+<h2 id="org41c0031">Confidence-aware Approach</h2>
+<ul>
+<li class="fragment appear">Intuition:
+<ul>
+<li class="fragment appear">Unreliable sources make errors frequently.</li>
+<li class="fragment appear">Unreliable sources have wide spectra of errors in distribution.</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li class="fragment appear">Additional Notations:
+<ul>
+<li class="fragment appear">Let \(\epsilon_s\) be the error of a claim made by source \(s\) from the truth.</li>
+<li class="fragment appear">Let \(\sigma_s^2\) be the variance \(\epsilon_s\).</li>
+<li class="fragment appear">Let \(u_s^2\) be the upper bound of error variance \(\sigma_s^2\).</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgaf53dc2">
+<h2 id="orgaf53dc2">Confidence-Aware Truth Discovery</h2>
+<ul>
+<li>Assumptions:
+<ul>
+<li class="fragment appear">Sources are consistent in the quality of its claims, so the truth is obtained from weighted average of claims
+\[x_n^*=\sum_{s\in\mathcal{S}_n}{w_s \cdot x_n^s}\]</li>
+<li class="fragment appear">Claims are made independently across sources
+\[\epsilon_s \overset{i.n.i.d.}{\sim} \mathcal{F}\]</li>
+<li class="fragment appear">None of the sources deliberately make errors.
+\[\mathbb{E}(\epsilon_s)=0\ \forall s \in \mathcal{S}\]</li>
+<li class="fragment appear">Reliability of sources is reflected in the spread of their errors, and assume error is normally distributed.
+\[\epsilon_s \overset{i.n.i.d}{\sim} N(0, \sigma_s^2)\ \forall s \in \mathcal{S}\]</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li class="fragment appear">Let \(\epsilon=\sum_{s\in\mathcal{S}}{w_s \epsilon_s}\), it follows that
+\[\epsilon \sim N\Big(0,\sum_{s\in\mathcal{S}}{w_s^2 \sigma_s^2}\Big)\]</li>
+<li class="fragment appear"><p>
+The goal is to minimise \(\epsilon\), i.e.
+</p>
+<div>
+\begin{array}{ll@{}ll}
+\min_{\{w_s\}} & \displaystyle\sum_{s\in\mathcal{S}} w_s^2 \sigma_s^2 &\\
+\text{s.t.}      & \displaystyle\sum_{s \in \mathcal{S}} w_s = 1,  w_s \geq 0, \forall s \in \mathcal{S}\\
+\end{array}
+
+</div></li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li class="fragment appear">The error variance is usuallyestimated by sample variance
+\[\hat{\sigma_s^2} = \frac{1}{|\mathcal{N}_s|}\sum_{n \in \mathcal{N}_s} \Big(x_n^s - x_n^{*(0)} \Big)^2\]</li>
+<li class="fragment appear">It follows that
+\[\frac{\sum_{n \in \mathcal{N}_s} \Big(x_n^s - x_n^{*(0)} \Big)^2}{\sigma_s^2}=\frac{|\mathcal{N}_s|\hat{\sigma_s^2}}{\sigma_s^2}\sim\chi^2(|\mathcal{N}_s|) \]</li>
+<li class="fragment appear">For \(\alpha\) significant level,
+\[P\Big(\chi^2_{(1-\alpha/2,|\mathcal{N}_s|)} < \frac{|\mathcal{N}_s|\hat{sigma_s^2}}{\sigma_s^2} < \chi^2_{(\alpha/2,|\mathcal{N}_s|)} \Big) = 1 - \alpha\]</li>
+<li class="fragment appear">And the \(1-\alpha\) confidence interval as
+\[\Big(\frac{\sum_{n \in \mathcal{N}_s}{(x_n^s - x_n^{*(0)})^2}}{\chi^2_{(1-\alpha/2,|\mathcal{N}_s|)}}, \frac{\sum_{n \in \mathcal{N}_s}{(x_n^s - x_n^{*(0)})^2}}{\chi^2_{(\alpha/2,|\mathcal{N}_s|)}}\Big)\]</li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li class="fragment appear">Use upper bound of \((1-\alpha)\) confidence interval, i.e. \(u_s^2\), as an estimator for \(\sigma_s^2\) instead
+<ul>
+<li class="fragment appear">The intuition is to minimise the worst case error spread</li>
+<li class="fragment appear">It's a biased but consistent estimator</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li class="fragment appear">The closed form solution to the error optimisation is given as
+\[w_s \propto \frac{1}{u_s^2} = \frac{\chi^2_{(\alpha/2,|\mathcal{N}_s|)}}{\sum _{n\in\mathcal{N}_s}{\Big(x_n^s-x_n^{*(0)}\Big)^2}}\]
+<ul>
+<li class="fragment appear">Weights are proportional to the upper bound of \(1-\alpha\) confidence interval for its real variance</li>
+<li class="fragment appear">For sources with small number of claims, the \(\chi^2\) probability value dominates</li>
+<li class="fragment appear">For sources with larger number of claims, it converge to \(|\mathcal{N}_s|\)</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li class="fragment appear">Algorithm:
+<img src="./img/catd_algo.png" alt="catd_algo.png" /></li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="file:///home/lucius/GitHub/reveal.js/js/reveal.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c/t',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'None', // see README of reveal.js for options
+transitionSpeed: 'default',
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+ { src: 'file:///home/lucius/GitHub/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'file:///home/lucius/GitHub/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'file:///home/lucius/GitHub/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'file:///home/lucius/GitHub/reveal.js/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'file:///home/lucius/GitHub/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
+
+});
+</script>
+</body>
+</html>

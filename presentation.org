@@ -1,0 +1,149 @@
+#+OPTIONS: num:nil toc:nil reveal_slide_number:c/t
+#+REVEAL_THEME: moon
+#+REVEAL_TRANS: None
+#+REVEAL_TITLE_SLIDE:
+* A Confidence-Aware Approach for Truth Discovery on Long-Tail Data
+  Lucius Hu
+* Truth Discovery
+ #+ATTR_REVEAL: :frag (appear)
+ - Problem:
+   #+ATTR_REVEAL: :frag (appear)
+   - Information is available from multiple sources
+   - It is inconsistent across various sources
+ - Intuition:
+   #+ATTR_REVEAL: :frag (appear)
+   - Information from a reliable source is more trustworthy
+   - Source that provides trustworthy information is more reliable
+ - Objectives:
+   #+ATTR_REVEAL: :frag (appear)
+   - Evaluate reliability of data sources
+   - Find the most trustworthy piece of information from most reliable source
+* Notations
+#+ATTR_REVEAL: :frag (appear)
+- Let $\mathcal{N}$ be the set of entities.
+- Let $\mathcal{S}$ be the set of sources.
+- Let $x_n^s$ be the information for an entity $n \in \mathcal{N}$ from a source $s \in \mathcal{S}$.
+- Let $\mathcal{C} = \bigcup_{n \in \mathcal{N}, s \in \mathcal{S}}{(n,s,x_n^s)}$ be the set of claims as input, where each claim is a triple of entity, source, and information.
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- Let $\mathcal{N}_s$ be the set of entities provided by source $s$.
+- Let $\mathcal{S}_n$ be the set of sources that provide a claim on entity $n$.
+- Let $x_n^*$ be the truth for an entity $n \in \mathcal{N}$, that is the most trustworthy piece of information $x_n^s$ for $s \in \mathcal{S}_n$.
+- Let $\mathcal{X} = \bigcup_{n \in \mathcal{N}}{(n,x_n^*)}$ be the set of truths as output, where each truth is a couple of entity, and truth.
+* Simple Voting Algorithm
+[[./img/simple_voting_algo.png]]
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- Assumptions: "majority" represents the "truth"
+- Drawbacks: Cannot characterise reliability levels of sources
+  #+ATTR_REVEAL: :frag (appear)
+  - Faulty sensors that keep emanating erroneous information
+  - Spam users who propagate false information on the Web
+- Corrections:
+  #+ATTR_REVEAL: :frag (appear)
+  - Simultaneously derive trustworthy facts and estimate source reliability degrees
+  - For continuous claims, replace simple average with weighted average
+  - For discreet claims, replace simple counts with weighted counts
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- Additional Notations:
+  #+ATTR_REVEAL: :frag (appear)
+  - Let $\mathcal{W} = \bigcup_{s \in \mathcal{S}}{w_s}$ be the set of weights for each source
+* Weighted Voting Algorithm
+[[./img/weighted_voting_algo.png]]
+#+REVEAL: split
+[[./img/eval_weights.png]]
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- Assumptions:
+  #+ATTR_REVEAL: :frag (appear)
+  - "truth" summarises all information weighted by reliability of each source
+  - The reliability of a source is proportional to the probability of the source giving trustworthy information.
+    #+ATTR_REVEAL: :frag (appear)
+    - The probability is approximated by the percentage of correct claims.
+- Drawbacks: Claims made by sources exhibits long-tail phenomenon.
+  #+ATTR_REVEAL: :frag (appear)
+  - Most sources only provide information about one or two entities.
+    #+ATTR_REVEAL: :frag (appear)
+    - The probability of correct claim cannot be well-approxmiated if a source only has very few claims.
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- Corrections:
+  #+ATTR_REVEAL: :frag (appear)
+  - Remove sources that provide only a few claims.
+    #+ATTR_REVEAL: :frag (appear)
+    - Threshold below which to remove a source needs to be defined.
+    - May result in very sparse data and limited coverage.
+  - Use Bayesian estimation with a smoothing prior
+    #+ATTR_REVEAL: :frag (appear)
+    - Needs to specify a prior
+    - Curse of dimensionality
+* Confidence-aware Approach
+#+ATTR_REVEAL: :frag (appear)
+- Intuition:
+  #+ATTR_REVEAL: :frag (appear)
+  - Unreliable sources make errors frequently.
+  - Unreliable sources have wide spectra of errors in distribution.
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- Additional Notations:
+  #+ATTR_REVEAL: :frag (appear)
+  - Let $\epsilon_s$ be the error of a claim made by source $s$ from the truth.
+  - Let $\sigma_s^2$ be the variance $\epsilon_s$.
+  - Let $u_s^2$ be the upper bound of error variance $\sigma_s^2$.
+* Confidence-Aware Truth Discovery
+- Assumptions:
+ #+ATTR_REVEAL: :frag (appear)
+  - Sources are consistent in the quality of its claims, so the truth is obtained from weighted average of claims
+    $$x_n^*=\sum_{s\in\mathcal{S}_n}{w_s \cdot x_n^s}$$
+  - Claims are made independently across sources
+    $$\epsilon_s \overset{i.n.i.d.}{\sim} \mathcal{F}$$
+  - None of the sources deliberately make errors.
+    $$\mathbb{E}(\epsilon_s)=0\ \forall s \in \mathcal{S}$$
+  - Reliability of sources is reflected in the spread of their errors, and assume error is normally distributed.
+    $$\epsilon_s \overset{i.n.i.d}{\sim} N(0, \sigma_s^2)\ \forall s \in \mathcal{S}$$
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- Let $\epsilon=\sum_{s\in\mathcal{S}}{w_s \epsilon_s}$, it follows that
+  $$\epsilon \sim N\Big(0,\sum_{s\in\mathcal{S}}{w_s^2 \sigma_s^2}\Big)$$
+- The goal is to minimise $\epsilon$, i.e.
+  \begin{array}{ll@{}ll}
+  \min_{\{w_s\}} & \displaystyle\sum_{s\in\mathcal{S}} w_s^2 \sigma_s^2 &\\
+  \text{s.t.}      & \displaystyle\sum_{s \in \mathcal{S}} w_s = 1,  w_s \geq 0, \forall s \in \mathcal{S}\\
+  \end{array}
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- The error variance is usuallyestimated by sample variance
+  $$\hat{\sigma_s^2} = \frac{1}{|\mathcal{N}_s|}\sum_{n \in \mathcal{N}_s} \Big(x_n^s - x_n^{*(0)} \Big)^2$$
+- It follows that
+  $$\frac{\sum_{n \in \mathcal{N}_s} \Big(x_n^s - x_n^{*(0)} \Big)^2}{\sigma_s^2}=\frac{|\mathcal{N}_s|\hat{\sigma_s^2}}{\sigma_s^2}\sim\chi^2(|\mathcal{N}_s|) $$
+- For $\alpha$ significant level,
+  $$P\Big(\chi^2_{(1-\alpha/2,|\mathcal{N}_s|)} < \frac{|\mathcal{N}_s|\hat{sigma_s^2}}{\sigma_s^2} < \chi^2_{(\alpha/2,|\mathcal{N}_s|)} \Big) = 1 - \alpha$$
+- And the $1-\alpha$ confidence interval as
+  $$\Big(\frac{\sum_{n \in \mathcal{N}_s}{(x_n^s - x_n^{*(0)})^2}}{\chi^2_{(1-\alpha/2,|\mathcal{N}_s|)}}, \frac{\sum_{n \in \mathcal{N}_s}{(x_n^s - x_n^{*(0)})^2}}{\chi^2_{(\alpha/2,|\mathcal{N}_s|)}}\Big)$$
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- Use upper bound of $(1-\alpha)$ confidence interval, i.e. $u_s^2$, as an estimator for $\sigma_s^2$ instead
+  #+ATTR_REVEAL: :frag (appear)
+  - The intuition is to minimise the worst case error spread
+  - It's a biased but consistent estimator
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- The closed form solution to the error optimisation is given as
+  $$w_s \propto \frac{1}{u_s^2} = \frac{\chi^2_{(\alpha/2,|\mathcal{N}_s|)}}{\sum _{n\in\mathcal{N}_s}{\Big(x_n^s-x_n^{*(0)}\Big)^2}}$$
+  #+ATTR_REVEAL: :frag (appear)
+  - Weights are proportional to the upper bound of $1-\alpha$ confidence interval for its real variance
+  - For sources with small number of claims, the $\chi^2$ probability value dominates
+  - For sources with larger number of claims, it converge to $|\mathcal{N}_s|$
+#+REVEAL: split
+#+ATTR_REVEAL: :frag (appear)
+- Algorithm:
+  #+ATTR_REVEAL: :frag (appear)
+  - Remove outliers, and initialise truths by mean or median for example.
+  - Comput source weight
+  - Compute truths
+* Takeaway From Experiments
+#+ATTR_REVEAL: :frag (appear)
+- CATD tkaes the number of claims made by a source into consideration
+  - Ceteris paribus, sources with fewer number of claims have low weights
+  - This is desirable because it's only meaningful to estimate the reliability if a source makes sufficient claims

@@ -1,0 +1,66 @@
+\documentclass[preview]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage[linesnumbered,commentsnumbered,lined,plain,noend]{algorithm2e}
+\author{Lucius}
+\IncMargin{1em}
+\begin{document}
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+  \SetKw{Define}{$\mathrel{{:}{=}}$}
+  \SetKw{Assign}{$\longleftarrow$}\SetKw{PlusAssign}{$\mathrel{{+}{=}}$}\SetKw{DivideAssign}{$\mathrel{{/}{=}}$}
+  \SetKw{And}{$\vee$}\SetKw{Or}{$\wedge$}
+  \SetKw{HashMap}{HashMap}\SetKw{Vector}{Vector}
+  \SetKwData{Claim}{$c$}\SetKwArray{Claims}{$\mathcal{C}$}
+  \SetKwData{Count}{count}\SetKwArray{Counts}{counts}
+  \SetKwData{Entity}{$n$}\SetKwArray{Entities}{$\mathcal{N}$}
+  \SetKwData{Source}{$s$}\SetKwArray{Sources}{$\mathcal{S}$}
+  \SetKwData{Truth}{$x_n^*$}\SetKwArray{Truths}{$\mathcal{X}$}
+  \SetKwData{Info}{$x_n^s$}
+  \SetKwArray{NewTruths}{$\mathcal{X}^'$}
+  \SetKwArray{Weights}{$\matchcal{W}$}
+  \SetKwFunction{Append}{append}
+  \SetKwFunction{EvalWeights}{eval\_weights}
+  \SetKwFunction{Sort}{sort}
+
+  \Input{set of claims \Claims \Define $\{(\Entity, \Source, \Info)\}$.}
+  \Output{set of truths \Truths \Define $\{(\Entity, \Truth)\}$.}
+  \Truths, \NewTruths \Define \Vector<$(\Entity \in \Entities, \Info \in \Truths )$>\;
+  \Weights \Assign \HashMap<$\Sources, |\Sources|^{-1}$>\;
+  \Repeat{\Truths $\equiv$ \NewTruths \Or meet pre-defined condition}{
+    \Truths \Assign \NewTruths;
+    \NewTruths \Define \Vector<$(\Entity \in \Entities, \Info \in \Truths)$>\;
+    \Weights \Assign \EvalWeights{\Claims, \Truths}\;
+    \ForEach{$\Entity \in \Entities$}{
+      \eIf{\Truths implements Arithmetic Operations}{
+        \Count \Assign 0\;
+        \ForEach(\tcp*[f]{Entity matches \Entity}){$\Claim \in \Claims\ \text{s.t.}\ \Claim.0 \equiv \Entity$}{
+          \Truth \PlusAssign (\Truth$\cdot$\Weights{$\Claim.1$})\;
+          \Count \PlusAssign 1\;
+        }
+        \Truth \DivideAssign  \Count\;
+      }{
+        \Counts\Define\ \HashMap<$k, v$>\;
+        \ForEach(\tcp*[f]{Entity matches \Entity}){$\Claim \in \Claims\ \text{s.t.}\ \Claim.0 \equiv \Entity$}{
+          \Counts{$\Claim.2$} \PlusAssign ($1\cdot\Weights{$\Claim.1$}$)\;
+        }
+        \Counts.\Sort{}\;
+        \Truth \Assign \Counts{$-1$}\;
+      }
+      \Truths.\Append{$(\Entity, \Truth)$}\;
+    }
+  }
+\end{algorithm}
+\end{document}
+\DecMargin{1em}
